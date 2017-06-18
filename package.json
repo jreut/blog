@@ -3,7 +3,7 @@
     "clean": "rm -rf dist && mkdir dist",
     "lint": "eslint ./ --fix",
     "predist": "yarn run clean && yarn run lint",
-    "dist": "cp {src,dist}/index.html",
+    "dist": "bin/dist",
     "preserve": "npm run dist",
     "serve": "node index.js"
   },
