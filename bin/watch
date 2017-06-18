@@ -35,6 +35,7 @@ const reload = function (label) {
 
 liveReload().listen(liveReloadPort, function () {
   console.log('LiveReload listening on %d...', liveReloadPort)
+  // TODO: debounce me
   chokidar
     .watch('src', { persistent: true })
     .on('add', reload('added'))

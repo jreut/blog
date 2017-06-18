@@ -11,19 +11,26 @@ const dist = 'dist'
 const indexTemplate = path.join(src, 'index.mustache')
 const indexDist = path.join(dist, 'index.html')
 const entryTemplate = path.join(src, 'entry.mustache')
-const entrySrc = path.join(src, 'entries')
 const entryDist = path.join(dist, 'entries')
 
+const readFile = function (file) {
+  return fs.readFileSync(file, { encoding: 'utf-8' })
+}
+
 toc().then(function (toc) {
-  const templateString = fs.readFileSync(indexTemplate, { encoding: 'utf-8' })
+  const templateString = readFile(indexTemplate)
   fs.writeFileSync(indexDist, mustache.render(templateString, toc))
-})
 
-const entryTemplateString = fs.readFileSync(entryTemplate, { encoding: 'utf-8' })
+  const entryTemplateString = readFile(entryTemplate)
+  toc.entries.forEach(function (entry) {
+    const file = entry.src
+    const partial = readFile(file)
+    const outputFile = path.join(entryDist, path.basename(file))
 
-fs.readdirSync(entrySrc).forEach(function (file) {
-  const partial = fs.readFileSync(path.join(entrySrc, file), { encoding: 'utf-8' })
-
-  const outputFile = path.join(entryDist, path.basename(file))
-  fs.writeFileSync(outputFile, mustache.render(entryTemplateString, {}, { entry: partial }))
+    fs.writeFileSync(outputFile, mustache.render(
+      entryTemplateString,
+      { title: entry.name },
+      { entry: partial })
+    )
+  })
 })

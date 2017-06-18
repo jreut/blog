@@ -9,6 +9,7 @@
     "watch": "bin/watch"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.1",
     "chokidar": "^1.7.0",
     "connect": "^3.6.2",
     "eslint": "^4.0.0",
@@ -23,5 +24,6 @@
     "mustache": "^2.3.0",
     "serve-static": "^1.12.3",
     "tiny-lr": "^1.0.5"
-  }
+  },
+  "dependencies": {}
 }
