@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "clean": "rm -rf dist && mkdir dist",
+    "clean": "rm -rf dist && mkdir -p dist/entries",
     "lint": "eslint ./ --fix",
     "predist": "yarn run clean && yarn run lint",
     "dist": "bin/dist",
     "preserve": "npm run dist",
-    "serve": "node index.js"
+    "serve": "node index.js",
+    "watch": "bin/watch"
   },
   "devDependencies": {
     "chokidar": "^1.7.0",
@@ -17,7 +18,9 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "inject-lr-script": "^2.1.0",
+    "moment": "^2.18.1",
     "morgan": "^1.8.2",
+    "mustache": "^2.3.0",
     "serve-static": "^1.12.3",
     "tiny-lr": "^1.0.5"
   }

@@ -10,7 +10,15 @@
     <header>
       <h1><em>le blog</em> de jreut</h1>
     </header>
-    <main id='content'>
+    <main>
+      <ul>
+      {{#entries}}
+        <li>
+          <span>{{created.year}} {{created.month}} {{created.date}} at {{created.time}}</span>
+          <a href="{{{href}}}">{{name}}</a>
+        </li>
+      {{/entries}}
+      </ul>
     </main>
     <footer>
       <nav>
