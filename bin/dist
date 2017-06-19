@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const mustache = require('mustache')
+const Task = require('folktale/data/task')
 const tocTask = require('../lib/toc')
 
 const src = 'src'
@@ -13,24 +14,41 @@ const indexDist = path.join(dist, 'index.html')
 const entryTemplate = path.join(src, 'entry.mustache')
 const entryDist = path.join(dist, 'entries')
 
-const readFile = function (file) {
-  return fs.readFileSync(file, { encoding: 'utf-8' })
+//    readFile : String   -> Task Err String
+const readFile = filepath => Task.fromNodeback(fs.readFile)(filepath, { encoding: 'utf-8' })
+
+//    writeFile : String   -> Task Err ()
+const writeFile = filepath => contents => Task.fromNodeback(fs.writeFile)(filepath, contents)
+
+//    setExit : Int    -> String  -> ()
+const setExit = status => message => () => {
+  process.exitCode = status
+  console.log(message)
 }
 
-tocTask().map(function (toc) {
-  const templateString = readFile(indexTemplate)
-  fs.writeFileSync(indexDist, mustache.render(templateString, toc))
+tocTask().chain(function (toc) {
+  const writeIndex = readFile(indexTemplate)
+    .chain(string => writeFile(indexDist)(mustache.render(string, toc)))
 
-  const entryTemplateString = readFile(entryTemplate)
-  toc.entries.forEach(function (entry) {
+  const writeEntry = entry => {
     const file = entry.src
-    const partial = readFile(file)
     const outputFile = path.join(entryDist, path.basename(file))
 
-    fs.writeFileSync(outputFile, mustache.render(
-      entryTemplateString,
-      { title: entry.name },
-      { entry: partial })
-    )
-  })
-}).run()
+    return Task
+      .waitAll([
+        readFile(file),
+        readFile(entryTemplate)
+      ])
+      .chain(([partial, entryTemplateString]) => writeFile(outputFile)(mustache.render(
+        entryTemplateString,
+        { title: entry.name },
+        { entry: partial })
+      ))
+  }
+
+  return Task.waitAll([writeIndex].concat(toc.entries.map(writeEntry)))
+}).run().listen({
+  onCancelled: setExit(-1)('?'),
+  onResolved: setExit(0)('✓'),
+  onRejected: setExit(1)('✗')
+})
