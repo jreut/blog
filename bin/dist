@@ -3,7 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const mustache = require('mustache')
-const toc = require('../lib/toc')
+const tocTask = require('../lib/toc')
 
 const src = 'src'
 const dist = 'dist'
@@ -17,7 +17,7 @@ const readFile = function (file) {
   return fs.readFileSync(file, { encoding: 'utf-8' })
 }
 
-toc().then(function (toc) {
+tocTask().map(function (toc) {
   const templateString = readFile(indexTemplate)
   fs.writeFileSync(indexDist, mustache.render(templateString, toc))
 
@@ -33,4 +33,4 @@ toc().then(function (toc) {
       { entry: partial })
     )
   })
-})
+}).run()
