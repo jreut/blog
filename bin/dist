@@ -20,7 +20,7 @@ const readFile = filepath => Task.fromNodeback(fs.readFile)(filepath, { encoding
 //    writeFile : String   -> Task Err ()
 const writeFile = filepath => contents => Task.fromNodeback(fs.writeFile)(filepath, contents)
 
-//    setExit : Int    -> String  -> ()
+//    setExit : Int    -> String  -> () -> ()
 const setExit = status => message => () => {
   process.exitCode = status
   console.log(message)
