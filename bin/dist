@@ -3,6 +3,11 @@
 const fs = require('fs')
 const path = require('path')
 const mustache = require('mustache')
+const postcss = require('postcss')([
+  require('cssnano'),
+  require('postcss-cssnext')
+])
+const _ = require('pointfree-fantasy')
 const Task = require('folktale/data/task')
 const tocTask = require('../lib/toc')
 
@@ -14,11 +19,37 @@ const indexDist = path.join(dist, 'index.html')
 const entryTemplate = path.join(src, 'entry.mustache')
 const entryDist = path.join(dist, 'entries')
 
-//    readFile : String   -> Task Err String
-const readFile = filepath => Task.fromNodeback(fs.readFile)(filepath, { encoding: 'utf-8' })
+//    readdir : String -> Task Err [String]
+const readdir = Task.fromNodeback(fs.readdir)
 
-//    writeFile : String   -> Task Err ()
-const writeFile = filepath => contents => Task.fromNodeback(fs.writeFile)(filepath, contents)
+//    readFile : String   -> Task Err String
+const readFile = filepath =>
+  Task
+    .fromNodeback(fs.readFile)(filepath, { encoding: 'utf-8' })
+    .mapRejected(console.error.bind(this))
+
+//    writeFile : String   -> String|Buffer -> Task Err ()
+const writeFile = filepath => contents =>
+  Task
+    .fromNodeback(fs.writeFile)(filepath, contents)
+    .bimap(console.error.bind(this), () => console.log('Wrote %s', filepath))
+
+const processStyle = basename => contents =>
+  Task.fromPromised(() =>
+    postcss.process(contents, {
+      from: path.join(src, basename),
+      to: path.join(dist, basename)
+    })
+  )()
+
+const render = template => view => partials =>
+  // TODO: memoize reading this file
+  readFile(path.join(src, 'head.html'))
+    .map(headPartial => mustache.render(
+      template,
+      view,
+      Object.assign(partials, { head: headPartial })
+    ))
 
 //    setExit : Int    -> String  -> () -> ()
 const setExit = status => message => () => {
@@ -26,9 +57,18 @@ const setExit = status => message => () => {
   console.log(message)
 }
 
+const transformOneStylesheet = basename =>
+  readFile(path.join(src, 'stylesheets', basename))
+    .chain(processStyle(basename))
+    .chain(writeFile(path.join(dist, 'stylesheets', basename)))
+
 tocTask().chain(function (toc) {
+  const writeStyles = readdir(path.join(src, 'stylesheets'))
+    .chain(_.compose(Task.waitAll, _.map(_.compose(transformOneStylesheet, path.basename))))
+
   const writeIndex = readFile(indexTemplate)
-    .chain(string => writeFile(indexDist)(mustache.render(string, toc)))
+    .chain(string => render(string)(toc)({}))
+    .chain(writeFile(indexDist))
 
   const writeEntry = entry => {
     const file = entry.src
@@ -39,14 +79,21 @@ tocTask().chain(function (toc) {
         readFile(file),
         readFile(entryTemplate)
       ])
-      .chain(([partial, entryTemplateString]) => writeFile(outputFile)(mustache.render(
-        entryTemplateString,
-        { title: entry.name },
-        { entry: partial })
-      ))
+      .chain(([partial, entryTemplateString]) => render(entryTemplateString)({
+        title: entry.name,
+        timestamp: entry.created.timestamp
+      })({
+        entry: partial
+      }))
+      .chain(writeFile(outputFile))
   }
 
-  return Task.waitAll([writeIndex].concat(toc.entries.map(writeEntry)))
+  const tasks = [
+    writeIndex,
+    writeStyles
+  ].concat(toc.entries.map(writeEntry))
+
+  return Task.waitAll(tasks)
 }).run().listen({
   onCancelled: setExit(-1)('?'),
   onResolved: setExit(0)('✓'),

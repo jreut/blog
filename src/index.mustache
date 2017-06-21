@@ -1,20 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <title>jreut's Internet place</title>
-    <meta charset='utf-8'>
-    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
-    <meta content='noindex, nofollow' name='robots'>
+    {{> head}}
   </head>
   <body>
     <header>
-      <h1><em>le blog</em> de jreut</h1>
+      <h1>jreut</h1>
     </header>
     <main>
       <ul>
       {{#entries}}
         <li>
-          <span>{{created.year}} {{created.month}} {{created.date}} at {{created.time}}</span>
+          <span>{{created.year}} {{created.month}} {{created.date}}</span>
+          —
           <a href="{{{href}}}">{{name}}</a>
         </li>
       {{/entries}}

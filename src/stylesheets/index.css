@@ -1,0 +1,28 @@
+body {
+  background-color: whitesmoke;
+  color: darkslategrey;
+  font-family: 'Optima', sans-serif;
+
+  /* sticky footer */
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+footer {
+  flex: none;
+  padding-bottom: 5vh;
+}
+a { text-decoration: none; }
+a:link { color: teal; }
+a:active { color: firebrick; }
+a:visited { color: color(teal tint(20%)); }
+a:hover { color: darksalmon; }
+code {
+  font-family: monospace;
+  background-color: color(whitesmoke tint(40%));
+  color: color(darkslategrey shade(40%));
+}
+ul, ol { list-style: none; }

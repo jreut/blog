@@ -1,15 +1,21 @@
 <!doctype html>
 <html>
-  <title>{{title}}</title>
+  <head>
+    {{> head}}
+  </head>
   <body>
     <header>
-      <h1><em>le blog</em> de jreut</h1>
+      <h1>jreut</h1>
+      <aside>{{timestamp}}</aside>
     </header>
     <main>
       {{> entry}}
+      <code>:wq</code>
     </main>
     <footer>
-      <code>:wq</code>
+      <nav>
+        <a href="/">index</a>
+      </nav>
     </footer>
   </body>
 </html>
