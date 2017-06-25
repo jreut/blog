@@ -9,6 +9,6 @@ connect()
   .use(liveReload())
   .use(serveStatic('dist'))
   .use(logger('tiny'))
-  .listen(port, function () {
-    console.log('dev server listening on %d...', port)
+  .listen(port, () => {
+    console.log('server listening on %d...', port)
   })

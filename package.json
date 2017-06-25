@@ -1,7 +1,8 @@
 {
   "scripts": {
     "clean": "rm -rf dist && mkdir -p dist/{entries,stylesheets}",
-    "lint": "eslint ./ --fix",
+    "lint": "eslint ./",
+    "lint:fix": "eslint ./ --fix",
     "predist": "yarn run clean && yarn run lint",
     "dist": "bin/dist",
     "preserve": "npm run dist",

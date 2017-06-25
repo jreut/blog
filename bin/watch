@@ -10,30 +10,26 @@ const liveReload = require('tiny-lr')
 const liveReloadPort = 35729
 const executable = 'yarn'
 
-const sendChange = function (file) {
-  http.get(sprintf('http://localhost:%d/changed?files=%s', liveReloadPort, file))
+const sendChange = file => http.get(sprintf('http://localhost:%d/changed?files=%s', liveReloadPort, file))
+
+const reload = label => filepath => {
+  console.log('%s: %s', label, filepath)
+  const out = process.stdout
+  const flags = ['run', 'dist']
+  out.write('Running ' + [executable, flags.join(' ')].join(' ') + '...')
+  const child = spawn(executable, flags, { stdio: ['ignore', 'ignore', 'inherit'] })
+  child.on('exit', status => {
+    if (status === 0) {
+      out.write('done.\n')
+      sendChange(path.relative('src/', filepath))
+    } else {
+      out.write('failed.\n')
+      console.error('something went wrong :/')
+    }
+  })
 }
 
-const reload = function (label) {
-  return function (filePath) {
-    console.log('%s: %s', label, filePath)
-    const out = process.stdout
-    const flags = ['run', 'dist']
-    out.write('Running ' + [executable, flags.join(' ')].join(' ') + '...')
-    const child = spawn(executable, flags, { stdio: ['ignore', 'ignore', 'inherit'] })
-    child.on('exit', function (status) {
-      if (status === 0) {
-        out.write('done.\n')
-        sendChange(path.relative('src/', filePath))
-      } else {
-        out.write('failed.\n')
-        console.error('something went wrong :/')
-      }
-    })
-  }
-}
-
-liveReload().listen(liveReloadPort, function () {
+liveReload().listen(liveReloadPort, () => {
   console.log('LiveReload listening on %d...', liveReloadPort)
   // TODO: debounce me
   chokidar
