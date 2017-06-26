@@ -14,11 +14,11 @@
     </aside>
   </section>
   <section>
-    <h1>An underappreciated standard</h1>
+    <h2>An underappreciated standard</h2>
     <p>
     I love SVG! I've used it in the past to make custom clipping paths around images, to filter images and to make line drawings for presentations. All without having to fire up a fancy, expensive program or make destructive edits to a file!
     </p>
-    <h1>But it's complicated</h1>
+    <h2>But it's complicated</h2>
     <p>
     SVG can be confusing, though. I ran into something that surprised me when I tried to use an SVG document as the <code>src</code> atrribute of an <code>&lt;img&gt;</code> element. In particular, I made an SVG that used a custom font via a CSS <code>@import</code> directive. For example, let's say the SVG was something like this:
 
@@ -56,7 +56,7 @@
     <p>
     It turns out Web browsers restrict the behavior of SVGs that have been embedded into an <code>&lt;img&gt;</code><sup><a id="return-gecko-svg" href="#footnote-gecko-svg"></a></sup>. In particular, they can't load external resources like the <code>@font-face</code> stylesheet I want to import from Google Fonts. This is a bummer, but thankfully the same page of documentation that tells me I can't do what I want also tells me how I can fix it!
     </p>
-    <h1>Documentation to the rescue!</h1>
+    <h2>Documentation to the rescue!</h2>
     <p>
     There is a <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">page on MDN</a> that talks about using SVGs as images in HTML pages. It says that, while you will get a restricted version of the SVG if you embed it through an <code>&lt;img&gt;</code> element, you can use an <code>&lt;object&gt;</code> element instead:
 

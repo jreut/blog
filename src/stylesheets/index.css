@@ -23,6 +23,7 @@ body {
   min-height: 100vh;
   flex-direction: column;
 }
+section > h2 { font-size: 1.2rem; }
 main {
   flex: 1;
   counter-reset: footnote;
