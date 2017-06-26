@@ -1,6 +1,17 @@
+:root {
+  --background: whitesmoke;
+  --background-callout: color(var(--background) tint(40%));
+  --body-text: darkslategrey;
+  --body-text-callout: color(var(--body-text) shade(40%));
+  --theme-primary: teal;
+  --theme-primary-tint: color(var(--theme-primary) tint(20%));
+  --theme-secondary: darksalmon;
+  --theme-secondary-tint: color(var(--theme-secondary) tint(70%));
+  --theme-accent: firebrick;
+}
 body {
-  background-color: whitesmoke;
-  color: darkslategrey;
+  background-color: var(--background);
+  color: var(--body-text);
   font-family: 'Optima', sans-serif;
 
   /* sticky footer */
@@ -10,19 +21,49 @@ body {
 }
 main {
   flex: 1;
+  counter-reset: footnote;
 }
 footer {
   flex: none;
   padding-bottom: 5vh;
 }
 a { text-decoration: none; }
-a:link { color: teal; }
-a:active { color: firebrick; }
-a:visited { color: color(teal tint(20%)); }
-a:hover { color: darksalmon; }
-code {
+a:link { color: var(--theme-primary); }
+a:active { color: var(--theme-accent); }
+a:visited { color: var(--theme-primary-tint); }
+a:hover { color: var(--theme-secondary); }
+code, pre {
   font-family: monospace;
-  background-color: color(whitesmoke tint(40%));
-  color: color(darkslategrey shade(40%));
+  background-color: var(--background-callout);
+  color: var(--body-text-callout);
 }
 ul, ol { list-style: none; }
+article { counter-reset: figure; }
+figure {
+  background-color: var(--background-callout);
+  width: 80%;
+}
+figcaption::before {
+  counter-increment: figure;
+  content: "Figure " counter(figure) ": ";
+  font-weight: bold;
+}
+figcaption {
+  font-style: italic;
+  text-align: center;
+}
+figcaption code {
+  font-style: normal;
+}
+sup > a::before {
+  counter-increment: footnote;
+  content: "[" counter(footnote) "]" ;
+}
+blockquote {
+  border-left: 0.25rem solid var(--theme-secondary);
+  padding: 0.5rem;
+  background-color: var(--theme-secondary-tint);
+}
+q {
+  background-color: var(--theme-secondary-tint);
+}

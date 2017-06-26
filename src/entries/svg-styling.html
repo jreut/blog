@@ -1,0 +1,123 @@
+<article>
+  <h1>How do I use an SVG as an image?</h1>
+  <section>
+    <p>
+    Last weekend I spent a few hours tinkering with the index page of my Web
+    site. I have not much experience at all with the front end of Web
+    development, and although it's something I like to do I sometimes find it
+    really hard to figure out the "right" way to write Web pages. I also like
+    to read documentation. For the Web, I love reading the docs from the <a
+    href="https://developer.mozilla.org/"><abbr title="Mozilla Developer
+  Network">MDN</abbr></a> and the <a href="https://whatwg.org"><abbr title="Web
+  Hypertext Application Technology Working Group">WHATWG</abbr></a>. Every time
+  I look something up, I get to find out something new and amazing about the
+  giant world of the World Wide Web!
+    </p>
+    <p>
+    Partly because I am sentimental toward standardization in industries
+    <sup><a href="#footnote-standards" id="return-standards"></a></sup> and
+    mostly because I am exhausted by the revolving door of front end
+    technologies, I try to use as much of the Web standards that I can.
+    </p>
+  </section>
+  <section>
+    <h1>An underappreciated standard</h1>
+    <p>
+    I love SVG! I've used it in the past to make custom clipping paths around images, to filter images and to make line drawings for presentations. All without having to fire up a fancy, expensive program or make destructive edits to a file!
+    </p>
+    <h1>But it's complicated</h1>
+    <p>
+    SVG can be confusing, though. I ran into something that surprised me when I
+    tried to use an SVG document as the <code>src</code> atrribute of an
+    <code>&lt;img&gt;</code> element. In particular, I made an SVG that used a
+    custom font via a CSS <code>@import</code> directive. For example, let's say the SVG was something like this:
+    <figure>
+<svg id="inline-svg" viewBox="0 0 64 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Tangerine');
+    text { font-family: 'Tangerine'; }
+  </style>
+  <text x="0" y="16">Hello, SVG!</text>
+</svg>
+      <figcaption>An inline SVG with a custom font</figcaption>
+    </figure>
+
+    This tiny SVG displays some text with a fancy Web font. It uses CSS declarations inside an <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/style"><code>SVG &lt;style&gt;</code></a> element:
+
+    <pre class="inline-svg"></pre>
+    </p>
+    <p>
+    So far this is all unsurprising to me. It get's interesting, though, once I try to put that SVG into a separate file and set it to be the <code>src</code> of an <code>&lt;img&gt;</code>:
+    <figure>
+      <img id="img-svg" src="/graphics/hello-svg.svg">
+      <figcaption>An SVG embedded with <code class="img-svg"></code></figcaption>
+    </figure>
+
+    Hey, what happened! I read <a href="https://www.w3.org/TR/html5/embedded-content-0.html#the-img-element">the spec</a>, which has precious little to say about what's allowed in an <code>&lt;img&gt;</code>:
+    <blockquote cite="https://www.w3.org/TR/html5/embedded-content-0.html#the-img-element">
+      The src attribute must be present, and must contain a valid non-empty URL potentially surrounded by spaces referencing a non-interactive, optionally animated, image resource that is neither paged nor scripted.
+    </blockquote>
+
+    Ok, but I don't think my document has anything that's <q>paged</q> or <q>scripted</q> in the first place.
+    </p>
+    <p>
+    It turns out Web browsers restrict the behavior of SVGs that have been embedded into an <code>&lt;img&gt;</code><sup><a id="return-gecko-svg" href="#footnote-gecko-svg"></a></sup>. In particular, they can't load external resources like the <code>@font-face</code> stylesheet I want to import from Google Fonts. This is a bummer, but thankfully the same page of documentation that tells me I can't do what I want also tells me how I can fix it!
+    </p>
+    <h1>Documentation to the rescue!</h1>
+    <p>
+    There is a <a
+      href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">page
+      on MDN</a> that talks about using SVGs as images in HTML pages. It says
+    that, while you will get a restricted version of the SVG if you embed it
+    through an <code>&lt;img&gt;</code> element, you can use an
+    <code>&lt;object&gt;</code> element instead:
+
+    <figure>
+      <object id="object-svg" data="/graphics/hello-svg.svg" type="image/svg+xml"></object>
+      <figcaption>An SVG embedded with <code class="object-svg"></code></figcaption>
+    </figure>
+
+    Success!
+    </p>
+    <p>
+    I'm glad I spent the time to read the documentation before trying to hack something together. My first idea of a solution was to fetch the SVG document with Javascript and append my HTML with the contents of the response body. I much prefer the notion of writing a declarative HTML element over writing imperative code! I don't have to worry about dancing around with <code>XMLHttpRequest</code> <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest"><em>(blech)</em></a> or worrying about who supports <a href="https://fetch.spec.whatwg.org">Fetch</a>. The <code>&lt;object&gt;</code> element has been supported since <a href="https://www.w3.org/TR/html4/struct/objects.html#h-13.3">HTML4</a>!
+    </p>
+  </section>
+  <section>
+    <p>
+    If you think I got some facts wrong, or if you think there is a better way
+    to do what I describe here, or if you just want to say hello, send me a
+    good ol' fashioned email. You can find the address <a href="/humans.txt">here</a>.
+    </p>
+  </section>
+  <hr>
+
+  <section>
+    <p id="footnote-standards">
+    We need standards to survive! How else would we know
+    <a href="https://www.time.gov">what time it is</a> or
+    <a href="https://www.hl7.org">how computers in hospitals should communicate</a> or
+    <a href="https://www.gs1.org/barcodes">how to construct a barcode</a> or
+    <a href="https://www-s.nist.gov/srmors/view_detail.cfm?srm=2387">how expensive peanut butter should be</a>?
+
+    <a href="#return-standards">&hookleftarrow;</a>
+    </p>
+    <p id="footnote-gecko-svg">
+    I haven't found any documentation for other browsers, but the MDN says <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">Firefox does</a>.
+
+    <a href="#return-gecko-svg">&hookleftarrow;</a>
+    </p>
+  </section>
+
+  <script type="application/javascript">
+    const appendSourceHTML = function (sourceQueryString, targetQueryString) {
+      const source = document.querySelector(sourceQueryString)
+      document.querySelectorAll(targetQueryString).forEach(function (targetNode) {
+        targetNode.textContent = source.outerHTML
+      })
+    }
+    appendSourceHTML('#inline-svg', 'pre.inline-svg')
+    appendSourceHTML('#img-svg', 'code.img-svg')
+    appendSourceHTML('#object-svg', 'code.object-svg')
+  </script>
+</article>

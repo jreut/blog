@@ -1,0 +1,7 @@
+<svg id="embedded-svg" viewBox="0 0 64 24" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Tangerine');
+    text { font-family: 'Tangerine'; }
+  </style>
+  <text x="0" y="16">Hello, SVG!</text>
+</svg>
