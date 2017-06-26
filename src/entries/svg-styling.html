@@ -2,23 +2,16 @@
   <h1>How do I use an SVG as an image?</h1>
   <section>
     <p>
-    Last weekend I spent a few hours tinkering with the index page of my Web
-    site. I have not much experience at all with the front end of Web
-    development, and although it's something I like to do I sometimes find it
-    really hard to figure out the "right" way to write Web pages. I also like
-    to read documentation. For the Web, I love reading the docs from the <a
-    href="https://developer.mozilla.org/"><abbr title="Mozilla Developer
-  Network">MDN</abbr></a> and the <a href="https://whatwg.org"><abbr title="Web
-  Hypertext Application Technology Working Group">WHATWG</abbr></a>. Every time
-  I look something up, I get to find out something new and amazing about the
-  giant world of the World Wide Web!
+    Last weekend I spent a few hours tinkering with the index page of my Web site. I don't have much experience with the front end of Web development, and although it's something I like to do I sometimes find it really hard to figure out the "right" way to write Web pages. I do, however, like to read documentation, and for the Web you can't beat the <a href="https://developer.mozilla.org/"><abbr title="Mozilla Developer Network">MDN</abbr></a> and the <a href="https://whatwg.org"><abbr title="Web Hypertext Application Technology Working Group">WHATWG</abbr></a>. It seems I learn something new by accident every time I visit either of those sites!
     </p>
     <p>
-    Partly because I am sentimental toward standardization in industries
-    <sup><a href="#footnote-standards" id="return-standards"></a></sup> and
-    mostly because I am exhausted by the revolving door of front end
-    technologies, I try to use as much of the Web standards that I can.
+    Partly because I am sentimental toward standardization in industries<sup><a href="#footnote-standards" id="return-standards"></a></sup> and mostly because I am exhausted by the revolving door of front end technologies, I try to use as much of the Web standards that I can. For me, that means I like to write pages in plain HTML with ES5-compatible Javascript whenever I want to do something dynamic. While it is a little bit more tedious to write HTML directly, I don't have to think about which characters I have to escape in Markdown<sup><a id="return-markdown" href="#footnote-markdown"></a></sup> or how to configure a static site generator.
     </p>
+    <aside>
+      <p>
+      It was hard for me to even <em>choose</em> a static site generator, let alone learn to configure it! That said, I think I might have negated any gains in the direction of simplicity. As I went about writing this site, I started adding things to the build scripts piecemeal. There's a little janky templating, some stylesheet preprocessing, some confusing mechanisms to gather metadata about each post—I certainly don't consider the couple hundred lines of code that assemble the site to be "simple"!
+      </p>
+    </aside>
   </section>
   <section>
     <h1>An underappreciated standard</h1>
@@ -27,10 +20,8 @@
     </p>
     <h1>But it's complicated</h1>
     <p>
-    SVG can be confusing, though. I ran into something that surprised me when I
-    tried to use an SVG document as the <code>src</code> atrribute of an
-    <code>&lt;img&gt;</code> element. In particular, I made an SVG that used a
-    custom font via a CSS <code>@import</code> directive. For example, let's say the SVG was something like this:
+    SVG can be confusing, though. I ran into something that surprised me when I tried to use an SVG document as the <code>src</code> atrribute of an <code>&lt;img&gt;</code> element. In particular, I made an SVG that used a custom font via a CSS <code>@import</code> directive. For example, let's say the SVG was something like this:
+
     <figure>
 <svg id="inline-svg" viewBox="0 0 64 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <style>
@@ -48,12 +39,14 @@
     </p>
     <p>
     So far this is all unsurprising to me. It get's interesting, though, once I try to put that SVG into a separate file and set it to be the <code>src</code> of an <code>&lt;img&gt;</code>:
+
     <figure>
       <img id="img-svg" src="/graphics/hello-svg.svg">
       <figcaption>An SVG embedded with <code class="img-svg"></code></figcaption>
     </figure>
 
-    Hey, what happened! I read <a href="https://www.w3.org/TR/html5/embedded-content-0.html#the-img-element">the spec</a>, which has precious little to say about what's allowed in an <code>&lt;img&gt;</code>:
+    Hey, what happened! <a href="https://www.w3.org/TR/html5/embedded-content-0.html#the-img-element">The spec</a> has precious little to say about what's allowed in an <code>&lt;img&gt;</code>:
+
     <blockquote cite="https://www.w3.org/TR/html5/embedded-content-0.html#the-img-element">
       The src attribute must be present, and must contain a valid non-empty URL potentially surrounded by spaces referencing a non-interactive, optionally animated, image resource that is neither paged nor scripted.
     </blockquote>
@@ -65,12 +58,7 @@
     </p>
     <h1>Documentation to the rescue!</h1>
     <p>
-    There is a <a
-      href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">page
-      on MDN</a> that talks about using SVGs as images in HTML pages. It says
-    that, while you will get a restricted version of the SVG if you embed it
-    through an <code>&lt;img&gt;</code> element, you can use an
-    <code>&lt;object&gt;</code> element instead:
+    There is a <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">page on MDN</a> that talks about using SVGs as images in HTML pages. It says that, while you will get a restricted version of the SVG if you embed it through an <code>&lt;img&gt;</code> element, you can use an <code>&lt;object&gt;</code> element instead:
 
     <figure>
       <object id="object-svg" data="/graphics/hello-svg.svg" type="image/svg+xml"></object>
@@ -82,31 +70,39 @@
     <p>
     I'm glad I spent the time to read the documentation before trying to hack something together. My first idea of a solution was to fetch the SVG document with Javascript and append my HTML with the contents of the response body. I much prefer the notion of writing a declarative HTML element over writing imperative code! I don't have to worry about dancing around with <code>XMLHttpRequest</code> <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest"><em>(blech)</em></a> or worrying about who supports <a href="https://fetch.spec.whatwg.org">Fetch</a>. The <code>&lt;object&gt;</code> element has been supported since <a href="https://www.w3.org/TR/html4/struct/objects.html#h-13.3">HTML4</a>!
     </p>
-  </section>
-  <section>
     <p>
-    If you think I got some facts wrong, or if you think there is a better way
-    to do what I describe here, or if you just want to say hello, send me a
-    good ol' fashioned email. You can find the address <a href="/humans.txt">here</a>.
+    There's probably a good security or privacy reason why an <code>&lt;img&gt;</code> isn't allowed to run scripts or load resource while an <code>&lt;object&gt;</code> is. Maybe it has something to do with how much browsers are supposed to trust image elements over "plugin" elements? I'm not sure.
     </p>
   </section>
-  <hr>
 
-  <section>
-    <p id="footnote-standards">
-    We need standards to survive! How else would we know
-    <a href="https://www.time.gov">what time it is</a> or
-    <a href="https://www.hl7.org">how computers in hospitals should communicate</a> or
-    <a href="https://www.gs1.org/barcodes">how to construct a barcode</a> or
-    <a href="https://www-s.nist.gov/srmors/view_detail.cfm?srm=2387">how expensive peanut butter should be</a>?
+  <section class="footnotes">
+    <ul>
+      <li>
+        <p>
+        We need standards to survive! How else would we know
+        <a href="https://www.time.gov">what time it is</a> or
+        <a href="https://www.hl7.org">how computers in hospitals should communicate</a> or
+        <a href="https://www.gs1.org/barcodes">how to construct a barcode</a> or
+        <a href="https://www-s.nist.gov/srmors/view_detail.cfm?srm=2387">how expensive peanut butter should be</a>?
 
-    <a href="#return-standards">&hookleftarrow;</a>
-    </p>
-    <p id="footnote-gecko-svg">
-    I haven't found any documentation for other browsers, but the MDN says <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">Firefox does</a>.
+        <a id="footnote-standards" href="#return-standards">&hookleftarrow;</a>
+        </p>
+      </li>
+      <li>
+        <p>
+        I'm looking at you, underscore character.
 
-    <a href="#return-gecko-svg">&hookleftarrow;</a>
-    </p>
+        <a id="footnote-markdown" href="#return-markdown">&hookleftarrow;</a>
+        </p>
+      </li>
+      <li>
+        <p>
+        I haven't found any documentation for other browsers, but the MDN says <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/SVG_as_an_Image#Restrictions">Firefox does</a>.
+
+        <a id="footnote-gecko-svg" href="#return-gecko-svg">&hookleftarrow;</a>
+        </p>
+      </li>
+    </ul>
   </section>
 
   <script type="application/javascript">

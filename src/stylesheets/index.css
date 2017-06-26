@@ -4,15 +4,19 @@
   --body-text: darkslategrey;
   --body-text-callout: color(var(--body-text) shade(40%));
   --theme-primary: teal;
-  --theme-primary-tint: color(var(--theme-primary) tint(20%));
+  --theme-primary-tint: color(var(--theme-primary) tint(30%));
+  --theme-primary-light: color(var(--theme-primary) tint(90%));
   --theme-secondary: darksalmon;
-  --theme-secondary-tint: color(var(--theme-secondary) tint(70%));
+  --theme-secondary-light: color(var(--theme-secondary) tint(70%));
   --theme-accent: firebrick;
 }
 body {
   background-color: var(--background);
   color: var(--body-text);
   font-family: 'Optima', sans-serif;
+
+  padding: 0;
+  margin: 0;
 
   /* sticky footer */
   display: flex;
@@ -25,7 +29,8 @@ main {
 }
 footer {
   flex: none;
-  padding-bottom: 5vh;
+  padding: 5vh 1em;
+  background-color: var(--theme-secondary-light);
 }
 a { text-decoration: none; }
 a:link { color: var(--theme-primary); }
@@ -37,6 +42,7 @@ code, pre {
   background-color: var(--background-callout);
   color: var(--body-text-callout);
 }
+pre { overflow: auto; }
 ul, ol { list-style: none; }
 article { counter-reset: figure; }
 figure {
@@ -62,9 +68,57 @@ sup > a::before {
 blockquote {
   border-left: 0.25rem solid var(--theme-secondary);
   padding: 0.5rem;
-  background-color: var(--theme-secondary-tint);
+  background-color: var(--theme-secondary-light);
 }
 q {
-  background-color: var(--theme-secondary-tint);
+  background-color: var(--theme-secondary-light);
 }
 nav > *:not(:last-child)::after { content: '\2014'; }
+
+aside {
+  border-left: 0.25rem solid var(--theme-primary);
+  padding: 0.5rem;
+  background-color: var(--theme-primary-light);
+}
+aside > * { margin: 0; }
+
+@media screen and (min-width: 40em) {
+  body {
+    padding: 0 0.5em;
+  }
+  aside {
+    margin: 0 1vw;
+  }
+}
+
+@media screen and (min-width: 60em) {
+  body {
+    max-width: 50vw;
+    margin-left: 15vw;
+  }
+  aside {
+    position: absolute;
+    width: 25vw;
+    left: 65vw;
+    margin-right: 1vw;
+  }
+}
+
+@media screen and (min-width: 75em) {
+  body {
+    margin: auto;
+    max-width: 40vw;
+  }
+  aside {
+    width: 20vw;
+    left: 70vw;
+  }
+}
+
+.footnotes {
+  background-color: var(--theme-primary-light);
+  padding: 1em;
+}
+.footnotes ul {
+  list-style-type: decimal;
+}
