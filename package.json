@@ -3,9 +3,10 @@
     "clean": "rm -rf dist && mkdir -p dist/{entries,stylesheets}",
     "lint": "eslint ./",
     "lint:fix": "eslint ./ --fix",
+    "meta": "cp src/humans.txt dist/humans.txt",
     "assets": "cp -r src/graphics dist/graphics",
     "predist": "yarn run clean && yarn run lint",
-    "dist": "yarn run assets && bin/dist",
+    "dist": "yarn run meta && yarn run assets && bin/dist",
     "preserve": "npm run dist",
     "serve": "node index.js",
     "watch": "bin/watch"

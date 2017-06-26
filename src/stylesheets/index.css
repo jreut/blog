@@ -67,3 +67,4 @@ blockquote {
 q {
   background-color: var(--theme-secondary-tint);
 }
+nav > *:not(:last-child)::after { content: '\2014'; }
