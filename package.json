@@ -9,7 +9,11 @@
     "dist": "yarn run meta && yarn run assets && bin/dist",
     "preserve": "npm run dist",
     "serve": "node index.js",
-    "watch": "bin/watch"
+    "watch": "bin/watch",
+    "predeploy:pre": "yarn run dist",
+    "predeploy:production": "yarn run dist",
+    "deploy:pre": "stout deploy -env development",
+    "deploy:production": "stout deploy -env production"
   },
   "devDependencies": {
     "cheerio": "^1.0.0-rc.1",
