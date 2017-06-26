@@ -53,6 +53,7 @@ figure {
   margin: 0.5rem auto;
   background-color: var(--background-callout);
   width: 100%;
+  border: thin dashed currentColor;
 }
 figcaption::before {
   counter-increment: figure;
