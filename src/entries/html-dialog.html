@@ -1,0 +1,107 @@
+<article>
+  <h2>What's <code>&lt;dialog&gt;</code>?</h2>
+
+  <section>
+    <h3 hidden>Preamble</h3>
+    <p>
+    Great question!
+    </p>
+    <p>
+    Today I downloaded <a href="https://www.mozilla.org/en-US/firefox/channel/desktop/#nightly">FirefoxNightly</a>, and a splash page welcomed me when I launched it. One of the links sent me to their <a href="https://developer.mozilla.org/en-US/Firefox/Experimental_features">experimental features</a> page, and I stumbled across this interesting new HTML element. It turns out the latest stable release of Google Chrome has better support for it, but thanks Mozilla for showing it to me in the first place!
+    </p>
+  </section>
+  </section>
+    <h3>What does it do?</h3>
+    <h4>It's a modal!</h4>
+    <figure id="dialog-plain">
+      <dialog open>
+	this is a dialog
+	<button class="close">close me</button>
+      </dialog>
+      <button class="inline">open me inline</button>
+      <button class="modal">open me in a modal</button>
+      <figcaption>A <code>&lt;dialog&gt;</code> element.</figcaption>
+    </figure>
+
+    <p>
+    I am excited to have a modal (or non-modal) dialog that doesn't need a JavaScript/CSS framework! If or when more browsers get around to implementing this, it could be pretty neat.
+    </p>
+
+    <h4>The HTMLDialogElement API</h4>
+    <p>
+    For me, one of the most interesting parts of this little discovery is the <a href="https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element">small API</a> exposed by the DOM for this element:
+    </p>
+    <dl>
+      <dt>open : boolean</dt>
+      <dd>Attribute that tells you whether the dialog is being shown. You can set this yourself, but the spec asks very kindly that you use one of the provided methods to change it. I think if they could, the spec writers would maybe make this a read-only attribute, but it seems like every element attribute is writable in HTML!</dd>
+      <dt>show() : void</dt>
+      <dd>Make the dialog visible at the point where the element was written in the document. If the dialog is already open, do nothing.</dd>
+      <dt>showModal() : void</dt>
+      <dd>Make the dialog visible on top of everything else in the center of the page, add a backdrop behind the dialog, and deactivate every other control on the page. For some reason this thing throws an error if the dialog is already open.</dd>
+      <dt>close() : void</dt>
+      <dd>Remove the <code>open</code> attribute, hide the dialog, and fire a <code>'close'</code> event on the element.
+    </dl>
+  </section>
+  <section>
+    <h3>Can I use it?</h3>
+    <p>
+    Probably not. Yet. Today, <a href="https://caniuse.com/#feat=dialog">Opera and Chrome</a> are the only browsers supporting it.
+    </p>
+    <h4>Can I fiddle around with it?</h4>
+    <p>
+    You bet! You could look at the source code of this document to see what I did to make that dialog element work. You can probably think of something much nicer, too.
+    </p>
+    <figure>
+      <pre class="put-source-here"></pre>
+      <figcaption>The styles and scripts that make this little dialog go.</figcaption>
+    </figure>
+    <h4>What else?</h4>
+    <p>
+    Try reading <a href="https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element">the spec</a> or <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog">the MDN</a>. They have a little more to say about accessibility and user-agent cancellation (ie. pressing <kbd>ESC</kbd> to close a modal.
+  </section>
+
+  <section id="source">
+    <style>
+      dialog {
+	/* Chrome uses absolute positioning by default */
+	position: relative
+      }
+      dialog::backdrop {
+	background-color: rgba(100, 100, 100, .5);
+      }
+      .blurred { filter: blur(2px); }
+    </style>
+
+    <script type="application/javascript">
+      const dialogFigures = ['dialog-plain']
+      dialogFigures
+	.map(function (id) { return document.getElementById(id) })
+	.forEach(function (figure) {
+	  const dialog = figure.querySelector('dialog')
+	  figure.querySelectorAll('button.close').forEach(function (button) {
+	    button.addEventListener('click', function () { dialog.close() })
+	  })
+	  figure.querySelectorAll('button.inline').forEach(function (button) {
+	    button.addEventListener('click', function () { dialog.show() })
+	  })
+	  figure.querySelectorAll('button.modal').forEach(function (button) {
+	    button.addEventListener('click', function () {
+	      if (dialog.open) return
+	      dialog.showModal()
+	      document.body.classList.add('blurred')
+	    })
+	  })
+	  const unBlur = function () { document.body.classList.remove('blurred') }
+	  dialog.addEventListener('close', unBlur);
+	  dialog.addEventListener('cancel', unBlur);
+	})
+    </script>
+  </section>
+  
+  <script type="application/javascript">
+    const sourceCode = document.getElementById('source').innerHTML
+    document
+      .querySelectorAll('.put-source-here')
+      .forEach(function (node) { node.textContent = sourceCode })
+  </script>
+</article>
