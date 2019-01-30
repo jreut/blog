@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "clean": "rm -rf dist && mkdir -p dist/{entries,stylesheets}",
+    "clean": "rm -rf dist && mkdir -p dist/entries dist/stylesheets",
     "lint": "eslint ./",
     "lint:fix": "eslint ./ --fix",
     "meta": "cp src/humans.txt dist/humans.txt",
